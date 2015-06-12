@@ -311,6 +311,11 @@ function parseData_(headers, data, path, state, value, query, options, includeFu
         dataInserted = true; 
       }
     }
+
+    // athace: Break line after the actual values
+	if (hasOption_(options, "champions") && data[state.rowIndex]) {
+          state.rowIndex++;
+    }
   } else if (!includeFunc || includeFunc(query, path, options)) {
     // Handle arrays containing only scalar values
     if (Array.isArray(value)) {
@@ -320,6 +325,11 @@ function parseData_(headers, data, path, state, value, query, options, includeFu
     // Insert new row if one doesn't already exist
     if (!data[state.rowIndex]) {
       data[state.rowIndex] = new Array();
+    }
+
+    // athace: Remove the actual path
+    if (hasOption_(options, "champions")) {
+      path = path.substring(path.lastIndexOf("/") + 1, path.length);
     }
     
     // Add a new header if one doesn't exist
@@ -420,6 +430,7 @@ function applyXPathRule_(rule, path, options) {
  *    debugLocation: Prepend each value with the row & column it belongs in
  */
 function defaultTransform_(data, row, column, options) {
+  // athace: fix to issues with 0 values
   if (data[row][column] == null) {
     if (row < 2 || hasOption_(options, "noInherit")) {
       data[row][column] = "";
