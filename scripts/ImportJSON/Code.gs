@@ -183,7 +183,7 @@ function ImportJSONAdvanced(url, fetchOptions, query, parseOptions, includeFunc,
   //var jsonstr = "[   {       \"id\":\"123\"    },   {       \"id\":\"457\",      \"jobs\": [         {            \"rate\":\"5.45\"         },         {            \"rate\":\"5.75\",            \"country\":\"US\"         }      ]   },   {      \"id\":\"458\",      \"jobs\": [         {            \"rate\":\"5.55\",            \"feedback\":               {                  \"score\":\"5.0\"               }         }      ]   }]";
   //var object = JSON.parse(jsonstr);
   
-  return parseJSONObject_(object, query, parseOptions, includeFunc, transformFunc);
+  return parseJSONObject_(object, query, parseOptions, includeFunc, transformFunc, url);
 }
 
 /** 
@@ -254,7 +254,7 @@ function AddOAuthService__(name, accessTokenUrl, requestTokenUrl, authorizationU
 /** 
  * Parses a JSON object and returns a two-dimensional array containing the data of that object.
  */
-function parseJSONObject_(object, query, options, includeFunc, transformFunc) {
+function parseJSONObject_(object, query, options, includeFunc, transformFunc, url) {
   var headers = new Array();
   var data    = new Array();
   
