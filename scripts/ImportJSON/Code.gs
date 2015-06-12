@@ -165,13 +165,21 @@ function ImportJSONViaPost(url, payload, fetchOptions, query, parseOptions) {
  * @return a two-dimensional array containing the data, with the first row containing headers
  **/
 function ImportJSONAdvanced(url, fetchOptions, query, parseOptions, includeFunc, transformFunc) {
- Logger.log('You are a member of %s Google Groups.', 10);
-  //var jsondata = UrlFetchApp.fetch(url, fetchOptions);
-  //var object   = JSON.parse(jsondata.getContentText());
-    var jsondata = UrlFetchApp.fetch(url, fetchOptions);
-  var object   = JSON.parse(jsondata.getContentText());
+
+  Logger.log('test log');
+
+  var jsondata = UrlFetchApp.fetch(url, fetchOptions);
   //var jsondata = UrlFetchApp.fetch("https://acs.leagueoflegends.com/v1/stats/player_history/EUW1/207378793", fetchOptions);
+  
+  var object   = JSON.parse(jsondata.getContentText());
+
   //var object   = JSON.parse("{\"champions\":[{\"id\":266,\"active\":true,\"freeToPlay\":false},{\"id\":103,\"active\":true,\"freeToPlay\":false},{\"id\":143,\"active\":true,\"freeToPlay\":false}]}");
+  
+  //var url = "{\"name\" : [\"x\",\"z\"]}";
+  //var object   = JSON.parse(url);
+
+  //var object   = JSON.parse("{\"champions\":{\"atti\":{\"id\":266,\"active\":true,\"freeToPlay\":false},\"vivi\":{\"id\":103,\"active\":true,\"freeToPlay\":false}}}");
+  
   //var jsonstr = "[   {       \"id\":\"123\"    },   {       \"id\":\"457\",      \"jobs\": [         {            \"rate\":\"5.45\"         },         {            \"rate\":\"5.75\",            \"country\":\"US\"         }      ]   },   {      \"id\":\"458\",      \"jobs\": [         {            \"rate\":\"5.55\",            \"feedback\":               {                  \"score\":\"5.0\"               }         }      ]   }]";
   //var object = JSON.parse(jsonstr);
   
@@ -290,6 +298,7 @@ function parseData_(headers, data, path, state, value, query, options, includeFu
       if (parseData_(headers, data, path, state, value[i], query, options, includeFunc)) {
         dataInserted = true;
 
+        // athace:
         //if (i > 0 && data[state.rowIndex]) {
         if (i > -1 && data[state.rowIndex] && i < value.length - 1) {
           state.rowIndex++;
@@ -434,7 +443,24 @@ function defaultTransform_(data, row, column, options) {
   if (hasOption_(options, "debugLocation")) {
     data[row][column] = "[" + row + "," + column + "]" + data[row][column];
   }
+
+  // athace
+  if (hasOption_(options, "parseNumbers")) {
+    var num = filterFloat(data[row][column]);
+    if (!isNaN(num)) {
+      data[row][column] = num;
+    }
+  }
 }
+
+// athace
+function filterFloat(value) {
+  if(/^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(value)) {
+    return Number(value);
+  }
+  return NaN;
+}
+
 
 /** 
  * If all the values in the given row share the same prefix, remove that prefix.
