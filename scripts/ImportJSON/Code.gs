@@ -258,6 +258,12 @@ function parseJSONObject_(object, query, options, includeFunc, transformFunc) {
   var headers = new Array();
   var data    = new Array();
   
+  // athace
+  if(hasOption_(options, "debugURL")) {
+    data[1] = new Array();
+    data[1][6] = url;
+  }
+  
   if (query && !Array.isArray(query) && query.toString().indexOf(",") != -1) {
     query = query.toString().split(",");
   }
