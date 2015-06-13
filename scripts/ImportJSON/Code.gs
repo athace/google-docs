@@ -60,7 +60,7 @@
  * @return a two-dimensional array containing the data, with the first row containing headers
  **/
 function ImportJSON(url, query, parseOptions) {
-  return ImportJSONAdvanced(url, null, query, parseOptions, includeXPath_, defaultTransform_);
+  return ImportJSONAdvanced(url, null, query, parseOptions, hasOption_(parseOptions, "excludeQuery") ? excludeXPath_ : includeXPath_, defaultTransform_);
 }
 
 /**
@@ -182,6 +182,8 @@ function ImportJSONAdvanced(url, fetchOptions, query, parseOptions, includeFunc,
   
   //var jsonstr = "[   {       \"id\":\"123\"    },   {       \"id\":\"457\",      \"jobs\": [         {            \"rate\":\"5.45\"         },         {            \"rate\":\"5.75\",            \"country\":\"US\"         }      ]   },   {      \"id\":\"458\",      \"jobs\": [         {            \"rate\":\"5.55\",            \"feedback\":               {                  \"score\":\"5.0\"               }         }      ]   }]";
   //var object = JSON.parse(jsonstr);
+  
+  //query = "/champions/atti/id,/champions/atti/active";
   
   return parseJSONObject_(object, query, parseOptions, includeFunc, transformFunc, url);
 }
@@ -402,7 +404,7 @@ function includeXPath_(query, path, options) {
   } else if (Array.isArray(query)) {
     for (var i = 0; i < query.length; i++) {
       if (applyXPathRule_(query[i], path, options)) {
-        return true; 
+        return true;
       }
     }  
   } else {
@@ -410,6 +412,25 @@ function includeXPath_(query, path, options) {
   }
   
   return false; 
+};
+
+/** 
+ * Returns true if none of the given queries apply to the given path. 
+ */
+function excludeXPath_(query, path, options) {
+  if (!query) {
+    return true; 
+  } else if (Array.isArray(query)) {
+    for (var i = 0; i < query.length; i++) {
+      if (applyXPathRule_(query[i], path, options)) {
+        return false; 
+      }
+    }  
+  } else {
+    return !applyXPathRule_(query, path, options);
+  }
+  
+  return true; 
 };
 
 /** 
@@ -437,6 +458,7 @@ function applyXPathRule_(rule, path, options) {
  */
 function defaultTransform_(data, row, column, options) {
   // athace: fix to issues with 0 values
+  //if (!data[row][column]) {
   if (data[row][column] == null) {
     if (row < 2 || hasOption_(options, "noInherit")) {
       data[row][column] = "";
