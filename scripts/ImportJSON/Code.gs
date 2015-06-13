@@ -60,7 +60,7 @@
  * @return a two-dimensional array containing the data, with the first row containing headers
  **/
 function ImportJSON(url, query, parseOptions) {
-  return ImportJSONAdvanced(url, null, query, parseOptions, hasOption_(parseOptions, "excludeQuery") ? excludeXPath_ : includeXPath_, defaultTransform_);
+  return ImportJSONAdvanced(url, null, query, parseOptions, includeXPath_, defaultTransform_);
 }
 
 /**
@@ -167,6 +167,21 @@ function ImportJSONViaPost(url, payload, fetchOptions, query, parseOptions) {
 function ImportJSONAdvanced(url, fetchOptions, query, parseOptions, includeFunc, transformFunc) {
 
   Logger.log('test log');
+
+  //url = "https://acs.leagueoflegends.com/v1/stats/player_history/EUW1/27075655?begIndex=15&endIndex=30&queue=0&queue=2&queue=4&queue=6&queue=7&queue=8&queue=9&queue=14&queue=16&queue=17&queue=25&queue=31&queue=32&queue=33&queue=41&queue=42&queue=52&queue=61&queue=65&queue=70&queue=73&queue=76&queue=78&queue=83&queue=91&queue=92&queue=93&queue=96&queue=98&queue=300";
+  //url = "https://acs.leagueoflegends.com/v1/stats/player_history/EUW1/27075655";
+  /*
+  var headers = {
+    "Authorization" : "Vapor eyJkYXRlX3RpbWUiOjE0MzQxMzM0MjUsImdhc19hY2NvdW50X2lkIjoiMjcwNzU2NTUiLCJwdnBuZXRfYWNjb3VudF9pZCI6IjI3MDc1NjU1Iiwic3VtbW9uZXJfbmFtZSI6ImF0aGFjZSIsInZvdWNoaW5nX2tleV9pZCI6IjkwMzQ3NTJiMmI0NTYwNDRhZTg3ZjI1OTgyZGFkMDdkIiwic2lnbmF0dXJlIjoiUFc5bUdJOU5pU3VwaituQ1MyNm9RaVVQelRRTmJaY0RhOXRaUzl2TlR2RDVVdnJXNWRZUlVFZjVOVmw3TWZ3QVYzUW4rOHUrRWFFWWlUemFKeFMzUkdrSzRyYjdmckhrSzkxRXI3K1V6R1ZGZEJlc3lJSjQ0am1uT1pUVGxJNUdvRktLTW5CbkhReENYNkdaY295Z3dHTFRyV2w3MW5tNU0wVUtxQUNoaFBNPSJ9",
+    "Region" : "EUNE"
+    };
+  
+  fetchOptions =
+   {
+     "method" : "get",
+     "headers" : headers
+   };
+   */
 
   var jsondata = UrlFetchApp.fetch(url, fetchOptions);
   //var jsondata = UrlFetchApp.fetch("https://acs.leagueoflegends.com/v1/stats/player_history/EUW1/207378793", fetchOptions);
@@ -324,7 +339,7 @@ function parseData_(headers, data, path, state, value, query, options, includeFu
 	if (hasOption_(options, "champions") && data[state.rowIndex]) {
           state.rowIndex++;
     }
-  } else if (!includeFunc || includeFunc(query, path, options)) {
+  } else if (!includeFunc || (includeFunc(query, path, options) == !hasOption_(options, "excludeQuery"))) {
     // Handle arrays containing only scalar values
     if (Array.isArray(value)) {
       value = value.join(); 
