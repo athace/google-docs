@@ -430,25 +430,6 @@ function includeXPath_(query, path, options) {
 };
 
 /** 
- * Returns true if none of the given queries apply to the given path. 
- */
-function excludeXPath_(query, path, options) {
-  if (!query) {
-    return true; 
-  } else if (Array.isArray(query)) {
-    for (var i = 0; i < query.length; i++) {
-      if (applyXPathRule_(query[i], path, options)) {
-        return false; 
-      }
-    }  
-  } else {
-    return !applyXPathRule_(query, path, options);
-  }
-  
-  return true; 
-};
-
-/** 
  * Returns true if the rule applies to the given path. 
  */
 function applyXPathRule_(rule, path, options) {
